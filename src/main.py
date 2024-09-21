@@ -1,7 +1,8 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import sys, pathlib, os
-import tkinter.filedialog as rf
+import tkinter.filedialog as tkf
+import tkinter.messagebox as tkm
 
 def getPath(relative_path):
     try:
@@ -27,15 +28,19 @@ path = ctk.CTkEntry(tabview_shortcutarrow, fg_color='#181818', placeholder_text=
 path.place(x=20, y=20, anchor=ctk.NW)
 
 def shortcut_arrow_apply():
-    os.mkdir('C:\\Plume')
-    newpath = path.get().replace('/', '\\\\')
-    os.rename(newpath, 'C:\\Plume\\shortcutarrow.ico')
-    file = open('regs\\temp.reg', mode='w')
-    file.write('Windows Registry Editor Version 5.00\n\n[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Icons]\n"29"="C:\\Plume\\shortcutarrow.ico"\n\n')
-    os.open('regs\\temp.reg')
+    allow = tkm.askquestion(title='Plume', message='Your registery is going to be edited, a few confirmation message can possibly open, please click on OK on all of them.\n\nCondition: Nor the software or his developer (Lazzytim) are responsible error, corruption and hardware/software malfunction!\n\n Do you wish to proceed?')
+    if allow == 'yes':
+        os.mkdir('C:\\Plume')
+        newpath = path.get().replace('/', '\\\\')
+        os.rename(newpath, 'C:\\Plume\\shortcutarrow.ico')
+        file = open('regs\\temp.reg', mode='w')
+        file.write('Windows Registry Editor Version 5.00\n\n[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Icons]\n"29"="C:\\Plume\\shortcutarrow.ico"\n\n')
+        os.open('regs\\temp.reg')
+    else:
+        tkm.showinfo(title='Plume', message='Operation successfully cancelled by the user.')
     
 def shortcut_arrow_input():
-    file = rf.askopenfile(title='Select a .ICO format to change the shortcut arrow with.', filetypes=[("Windows Icon File","*.ico")]).name
+    file = tkf.askopenfile(title='Select a .ICO format to change the shortcut arrow with.', filetypes=[("Windows Icon File","*.ico")]).name
     path.insert(0, file)
 
 ctk.CTkButton(tabview_shortcutarrow, text="•••", width=50, fg_color='#ffd600', hover_color='#434343', text_color='#181818', command=shortcut_arrow_input).place(x=280, y=20, anchor=ctk.NW)
